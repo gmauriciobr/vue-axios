@@ -1,0 +1,38 @@
+<html>
+	<head th:replace="~{base :: head}">
+	<body>
+		<div th:replace="~{base :: logo}"/>
+		<div class="container">
+			<div th:replace="~{base :: titulo('Novo Pedido')}"/>
+			
+			<div class="card mt-3">
+				<form th:object="${pedidoDTO}" class="card-body" action="novo" method="POST">
+					<div class="form-group">
+						<label for="nome">Produto</label>
+						<input th:field="*{nome}" class="form-control" th:errorclass="is-invalid" placeholder="Nome do Produto"/>
+						<small>Informe qual o nome do produto.</small>
+						<div th:errors="*{nome}" class="invalid-feedback"/>
+					</div>
+					<div class="form-group">
+						<label for="urlProduto">URL</label>
+						<input th:field="*{urlProduto}" class="form-control" th:errorclass="is-invalid" placeholder="URL do Produto">
+						<small>Procure em um site o produto que voce deseja e cole a URL da página aqui.</small>
+						<div th:errors="*{urlProduto}" class="invalid-feedback"/>
+					</div>
+					<div class="form-group">
+						<label for="urlImagem">Imagem</label>
+						<input th:field="*{urlImagem}" class="form-control" th:errorclass="is-invalid" name="urlImagem" placeholder="URL da Imagem"/ >
+						<small>Copie a URL de uma boa imagem do produto e cole aqui  para ajudar a conseguir compradores</small>
+						<div th:errors="*{urlImagem}" class="invalid-feedback"/>
+					</div>
+					<div class="form-group">
+						<label for="descricao">Descrição</label>
+						<textarea th:field="*{descricao}" class="form-control" th:errorclass="is-invalid" placeholder="Adicione detalhes importantes para ajudar o comporador"></textarea>
+						<div th:errors="*{descricao}" class="invalid-feedback"/>
+					</div>
+					<button class="btn btn-primary" type="submit">Cadastrar</button>
+				</form>
+			</div>
+		</div>
+	</body>
+</html>

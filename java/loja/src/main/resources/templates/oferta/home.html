@@ -1,0 +1,106 @@
+<html>
+	<head th:replace="~{base :: head}"/>
+	<body onload="onLoad()">
+		<div th:replace="~{base :: logo}"/>
+		<div class="container" id="ofertas">
+			<div th:replace="~{base :: titulo('Faça sua Oferta')}"/>
+			
+			<div class="card mt-3" v-for="pedido in pedidos">
+				<div class="card-header alert-dark">{{pedido.nome}}</div>
+				<div class="card-body">
+					<div class="row">
+						<div class="col-12 col-sm-8 mb-3">
+							<div>
+								<label>Produto</label>
+								<a v-bind:href="pedido.urlProduto">{{pedido.nome}}</a>
+							</div>
+							
+							<div>
+								<label>Descrição</label>
+								<textarea disabled="disabled" class="form-control">{{pedido.descricao}}</textarea>
+							</div>
+							
+							<div class="row mt-2">
+								<div class="col-md-5">
+									 <label for="valor">Valor</label>
+									 <input id="valor" v-bind:class="{'is-invalid' : pedido.erros.valor!== ''}" v-model="pedido.valor" class="form-control" name="valor"/>
+									 <div v-if="pedido.erros.valor" class="invalid-feedback">
+									 	{{pedido.erros.valor}}
+									 </div>
+								</div>
+								<div class="col-md-7">
+									<label for="dataEntrega">Data Entrega</label> 
+									<input id="dataEntrega" v-bind:class="{'is-invalid' : pedido.erros.dataEntrega!== ''}" v-model="pedido.dataEntrega" class="form-control"/>
+									<div v-if="pedido.erros.dataEntrega" class="invalid-feedback">
+									 	{{pedido.erros.dataEntrega}}
+									 </div>
+								</div>
+							</div>
+							<div>
+								<label for="comentario">Comentario</label>
+								<textarea id="comentario" v-model="pedido.comentario" class="form-control"></textarea>
+							</div>
+							<div class="mt-2">
+								<button v-if="pedido.ofertaEnviada" class="btn btn-success">Oferta Enviada</button>
+								<button v-else v-on:click="enviarOferta(pedido)" class="btn btn-primary">Enviar Oferta</button>
+							</div>
+						</div>
+					
+						<div class="col-12 col-sm-4">
+							<div>
+								<img class="img-thumbnail" v-bind:src="pedido.urlImagem"/>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			function onLoad(){
+				var app = new Vue({ 
+					el : '#ofertas',
+					data : {
+						pedidos : []
+					},
+					mounted() {
+						axios
+					      .get('http://localhost:8080/api/pedido/aguardando')
+					      .then(response => {
+					    	  response.data.forEach(pedido => {
+					    		  pedido.ofertaEnviada = false;
+					    		  pedido.erros = {
+					    				valor: '',
+					    				dataEntrega: ''
+					    		  }
+					    	  })
+					    	  this.pedidos = response.data  
+					      })
+					},
+					methods: {
+						enviarOferta: function(pedido){
+							pedido.erros = {
+				    				valor: '',
+				    				dataEntrega: ''
+				    		};
+							axios
+						      .post('http://localhost:8080/api/oferta', {
+						    	  idPedido: pedido.id,
+						    	  valor: pedido.valor,
+						    	  dataEntrega: pedido.dataEntrega,
+						    	  comentario: pedido.comentario
+						      })
+						      .then(response => pedido.ofertaEnviada = true)
+						      .catch(error => {
+						    	  error.response.data.errors.forEach(error => {
+						    		  pedido.erros[error.field] = error.defaultMessage
+						    	  })
+						      })
+						}
+					}
+				});
+			}
+		</script>
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+	</body>
+</html>
