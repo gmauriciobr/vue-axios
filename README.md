@@ -14,7 +14,7 @@
 
 #### Baixar o projeto utilizando o git:
  ``` 
-    git clone https://github.com/gmauriciobr/spring-mvc.git
+    git clone https://github.com/gmauriciobr/vue-axios.git
  ```
 
  1. Executar o comando para fazer o build e aguardar a execução:
@@ -35,7 +35,7 @@
 
 4. Acessar pelo navegador a ULR: http:\\localhost:8080/home
    - ![Img01](images/img_02.png)
-   - ![Img02](images/img_03.png)
+   - ![Img04](images/img_04.png)
 
 
 
